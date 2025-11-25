@@ -20,7 +20,7 @@ st.set_page_config(
 @st.cache_resource
 def load_model():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    MODEL_PATH = os.path.join(BASE_DIR, "../models/random_forest_model.pkl")
+    MODEL_PATH = os.path.join(BASE_DIR, "./models/random_forest_model.pkl")
     MODEL_PATH = os.path.normpath(MODEL_PATH)
     return joblib.load(MODEL_PATH)
 
@@ -28,7 +28,7 @@ def load_model():
 @st.cache_data
 def load_data():
     try:
-        df = pd.read_csv("../data/processed_data_cleaned.csv")
+        df = pd.read_csv("./data/processed_data_cleaned.csv")
         # Map numeric labels back to text
         df["addiction_level"] = df["addiction_level"].map(
             {0: "Low", 1: "Medium", 2: "High"}
