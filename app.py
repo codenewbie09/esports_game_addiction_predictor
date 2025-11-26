@@ -7,14 +7,11 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 
-# Set page config
 st.set_page_config(
     page_title="Game Addiction Predictor & Analytics",
     page_icon="🎮",
     layout="wide",
 )
-
-# Load model and data
 
 
 @st.cache_resource
@@ -42,13 +39,11 @@ def load_data():
 model = load_model()
 df = load_data()
 
-# Sidebar navigation
 st.sidebar.title("🎮 Navigation")
 page = st.sidebar.radio(
     "Go to", ["🎯 Predictor", "📊 Data Analytics", "📈 Model Performance", "ℹ️ About"]
 )
 
-# ===================== PREDICTOR PAGE =====================
 if page == "🎯 Predictor":
     st.title("🎮 Game Addiction Level Predictor")
     st.markdown("""
@@ -134,7 +129,6 @@ if page == "🎯 Predictor":
         addiction_map = {0: "Low", 1: "Medium", 2: "High"}
         addiction_label = addiction_map[prediction]
 
-        # Display results in columns
         col1, col2 = st.columns([2, 1])
 
         with col1:
@@ -167,7 +161,6 @@ if page == "🎯 Predictor":
 
         st.markdown("---")
 
-        # Feature importance
         col1, col2 = st.columns(2)
 
         with col1:
@@ -216,7 +209,6 @@ if page == "🎯 Predictor":
             "👈 Adjust game parameters in the sidebar and click **Predict** to begin."
         )
 
-# ===================== DATA ANALYTICS PAGE =====================
 elif page == "📊 Data Analytics":
     st.title("📊 Dataset Analytics & Insights")
 
@@ -231,7 +223,6 @@ elif page == "📊 Data Analytics":
             } features**"
         )
 
-        # Overview metrics
         st.markdown("---")
         st.subheader("📈 Dataset Overview")
 
@@ -247,7 +238,6 @@ elif page == "📊 Data Analytics":
             avg_tags = df["addictive_tag_count"].mean()
             st.metric("Avg Addictive Tags", f"{avg_tags:.1f}")
 
-        # Target distribution
         st.markdown("---")
         st.subheader("🎯 Addiction Level Distribution")
 
@@ -282,7 +272,6 @@ elif page == "📊 Data Analytics":
                 ax.bar_label(container)
             st.pyplot(fig)
 
-        # Feature distributions
         st.markdown("---")
         st.subheader("📊 Feature Distributions")
 
@@ -329,7 +318,6 @@ elif page == "📊 Data Analytics":
             plt.ylabel(feature_to_plot)
             st.pyplot(fig)
 
-        # Correlation heatmap
         st.markdown("---")
         st.subheader("🔥 Feature Correlation Matrix")
 
@@ -348,7 +336,6 @@ elif page == "📊 Data Analytics":
         plt.title("Feature Correlation Heatmap", fontsize=14, fontweight="bold")
         st.pyplot(fig)
 
-        # Multiplayer impact
         st.markdown("---")
         st.subheader("🎮 Multiplayer Impact on Addiction")
 
@@ -390,7 +377,6 @@ elif page == "📊 Data Analytics":
 
         st.dataframe(df.describe().T.style.format("{:.2f}"), use_container_width=True)
 
-# ===================== MODEL PERFORMANCE PAGE =====================
 elif page == "📈 Model Performance":
     st.title("📈 Model Performance Analysis")
 
@@ -402,7 +388,6 @@ elif page == "📈 Model Performance":
             "This page shows how well the Random Forest model performs on the test data."
         )
 
-        # Model metrics
         st.markdown("---")
         st.subheader("🎯 Overall Performance Metrics")
 
@@ -416,7 +401,6 @@ elif page == "📈 Model Performance":
         with col4:
             st.metric("F1 Score", "54%", help="Harmonic mean of precision and recall")
 
-        # Per-class performance
         st.markdown("---")
         st.subheader("📊 Performance by Addiction Level")
 
@@ -469,7 +453,6 @@ elif page == "📈 Model Performance":
             ax.set_ylim([0, 1])
             st.pyplot(fig)
 
-        # Confusion Matrix (simulated)
         st.markdown("---")
         st.subheader("🔀 Confusion Matrix")
 
@@ -515,7 +498,6 @@ elif page == "📈 Model Performance":
             - Better separation of Medium/High boundary
             """)
 
-        # Feature importance
         st.markdown("---")
         st.subheader("⭐ Feature Importance Analysis")
 
@@ -559,7 +541,6 @@ elif page == "📈 Model Performance":
             plt.xlabel("Importance Score")
             st.pyplot(fig)
 
-# ===================== ABOUT PAGE =====================
 elif page == "ℹ️ About":
     st.title("ℹ️ About This Project")
 
