@@ -27,7 +27,6 @@ def load_data():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         DATA_PATH = os.path.join(BASE_DIR, "data", "processed_data_cleaned.csv")
         df = pd.read_csv(DATA_PATH)
-        # Map numeric labels back to text
         df["addiction_level"] = df["addiction_level"].map(
             {0: "Low", 1: "Medium", 2: "High"}
         )
@@ -39,42 +38,42 @@ def load_data():
 model = load_model()
 df = load_data()
 
-st.sidebar.title("🎮 Navigation")
+st.sidebar.title("Navigation")
 page = st.sidebar.radio(
-    "Go to", ["🎯 Predictor", "📊 Data Analytics", "📈 Model Performance", "ℹ️ About"]
+    "Go to", ["Predictor", "Data Analytics", "Model Performance", "About"]
 )
 
-if page == "🎯 Predictor":
-    st.title("🎮 Game Addiction Level Predictor")
+if page == "Predictor":
+    st.title("Game Addiction Level Predictor")
     st.markdown("""
     Predict the **addiction level** of a Steam game based on its characteristics.
     Adjust the parameters in the sidebar and click **Predict** to see results.
     """)
     st.markdown("---")
 
-    st.sidebar.header("🕹️ Input Game Details")
+    st.sidebar.header("Input Game Details")
 
     price = st.sidebar.number_input(
-        "💰 Price (in USD)", min_value=0.0, max_value=120.0, value=10.0, step=0.5
+        "Price (in USD)", min_value=0.0, max_value=120.0, value=10.0, step=0.5
     )
     positive_ratings = st.sidebar.number_input(
-        "👍 Positive Ratings", min_value=0, max_value=3000000, value=500, step=50
+        "Positive Ratings", min_value=0, max_value=3000000, value=500, step=50
     )
     negative_ratings = st.sidebar.number_input(
-        "👎 Negative Ratings", min_value=0, max_value=500000, value=100, step=10
+        "Negative Ratings", min_value=0, max_value=500000, value=100, step=10
     )
     is_multiplayer = st.sidebar.selectbox(
-        "🎯 Multiplayer Support",
+        "Multiplayer Support",
         [0, 1],
         format_func=lambda x: "Yes" if x == 1 else "No",
     )
     description_length = st.sidebar.slider(
-        "📝 Description Length (characters)", 0, 400, 200
+        "Description Length (characters)", 0, 400, 200
     )
-    tag_count = st.sidebar.slider("🏷️ Total Tags", 1, 25, 10)
-    addictive_tag_count = st.sidebar.slider("🔥 Addictive Tags", 0, 10, 3)
+    tag_count = st.sidebar.slider("Total Tags", 1, 25, 10)
+    addictive_tag_count = st.sidebar.slider("Addictive Tags", 0, 10, 3)
 
-    with st.sidebar.expander("ℹ️ What are 'Addictive Tags'?"):
+    with st.sidebar.expander("What are 'Addictive Tags'?"):
         st.markdown("""
         Addictive tags are game genres/features linked to high player engagement:
         
@@ -90,10 +89,9 @@ if page == "🎯 Predictor":
         """)
 
     st.sidebar.markdown("---")
-    predict_btn = st.sidebar.button("🚀 Predict Addiction Level", type="primary")
+    predict_btn = st.sidebar.button("Predict Addiction Level", type="primary")
 
     if predict_btn:
-        # Apply log transformation
         price_log = np.log1p(price)
         pos_log = np.log1p(positive_ratings)
         neg_log = np.log1p(negative_ratings)
@@ -132,26 +130,26 @@ if page == "🎯 Predictor":
         col1, col2 = st.columns([2, 1])
 
         with col1:
-            st.subheader("🎯 Prediction Result")
+            st.subheader("Prediction Result")
 
             if addiction_label == "Low":
-                st.success(f"### 🟢 Predicted: **{addiction_label} Addiction Risk**")
+                st.success(f"### Predicted: **{addiction_label} Addiction Risk**")
                 st.write(
                     "This game shows low engagement patterns and minimal addictive behavior."
                 )
             elif addiction_label == "Medium":
-                st.warning(f"### 🟡 Predicted: **{addiction_label} Addiction Risk**")
+                st.warning(f"### Predicted: **{addiction_label} Addiction Risk**")
                 st.write(
                     "This game exhibits moderate addictive potential with balanced engagement."
                 )
             else:
-                st.error(f"### 🔴 Predicted: **{addiction_label} Addiction Risk**")
+                st.error(f"### Predicted: **{addiction_label} Addiction Risk**")
                 st.write(
                     "This game displays high addictive tendencies with strong engagement signals."
                 )
 
         with col2:
-            st.subheader("📊 Confidence Scores")
+            st.subheader("Confidence Scores")
             prob_df = pd.DataFrame(
                 {"Level": ["Low", "Medium", "High"], "Probability": proba}
             )
@@ -164,7 +162,7 @@ if page == "🎯 Predictor":
         col1, col2 = st.columns(2)
 
         with col1:
-            st.subheader("📊 Feature Importance")
+            st.subheader("Feature Importance")
             importances = model.feature_importances_
             fi_df = pd.DataFrame(
                 {"Feature": feature_names, "Importance": importances}
@@ -179,7 +177,7 @@ if page == "🎯 Predictor":
             st.pyplot(fig)
 
         with col2:
-            st.subheader("🎲 Input Summary")
+            st.subheader("Input Summary")
             input_summary = pd.DataFrame(
                 {
                     "Feature": [
@@ -205,26 +203,22 @@ if page == "🎯 Predictor":
             st.dataframe(input_summary, hide_index=True, use_container_width=True)
 
     else:
-        st.info(
-            "👈 Adjust game parameters in the sidebar and click **Predict** to begin."
-        )
+        st.info("Adjust game parameters in the sidebar and click **Predict** to begin.")
 
-elif page == "📊 Data Analytics":
-    st.title("📊 Dataset Analytics & Insights")
+elif page == "Data Analytics":
+    st.title("Dataset Analytics & Insights")
 
     if df is None:
         st.error(
-            "❌ Dataset not found. Please ensure processed_data_cleaned.csv is available."
+            "Dataset not found. Please ensure processed_data_cleaned.csv is available."
         )
     else:
         st.success(
-            f"✅ Dataset loaded: **{df.shape[0]} games** with **{
-                df.shape[1]
-            } features**"
+            f"Dataset loaded: **{df.shape[0]} games** with **{df.shape[1]} features**"
         )
 
         st.markdown("---")
-        st.subheader("📈 Dataset Overview")
+        st.subheader("Dataset Overview")
 
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -239,7 +233,7 @@ elif page == "📊 Data Analytics":
             st.metric("Avg Addictive Tags", f"{avg_tags:.1f}")
 
         st.markdown("---")
-        st.subheader("🎯 Addiction Level Distribution")
+        st.subheader("Addiction Level Distribution")
 
         col1, col2 = st.columns([1, 2])
 
@@ -273,7 +267,7 @@ elif page == "📊 Data Analytics":
             st.pyplot(fig)
 
         st.markdown("---")
-        st.subheader("📊 Feature Distributions")
+        st.subheader("Feature Distributions")
 
         feature_to_plot = st.selectbox(
             "Select a feature to visualize:",
@@ -319,7 +313,7 @@ elif page == "📊 Data Analytics":
             st.pyplot(fig)
 
         st.markdown("---")
-        st.subheader("🔥 Feature Correlation Matrix")
+        st.subheader("Feature Correlation Matrix")
 
         fig, ax = plt.subplots(figsize=(10, 8))
         numeric_cols = df.select_dtypes(include=[np.number]).columns
@@ -337,7 +331,7 @@ elif page == "📊 Data Analytics":
         st.pyplot(fig)
 
         st.markdown("---")
-        st.subheader("🎮 Multiplayer Impact on Addiction")
+        st.subheader("Multiplayer Impact on Addiction")
 
         col1, col2 = st.columns(2)
 
@@ -371,17 +365,16 @@ elif page == "📊 Data Analytics":
             )
             st.caption("Percentage distribution of addiction levels by game type")
 
-        # Summary statistics
         st.markdown("---")
-        st.subheader("📋 Summary Statistics")
+        st.subheader("Summary Statistics")
 
         st.dataframe(df.describe().T.style.format("{:.2f}"), use_container_width=True)
 
-elif page == "📈 Model Performance":
-    st.title("📈 Model Performance Analysis")
+elif page == "Model Performance":
+    st.title("Model Performance Analysis")
 
     if df is None:
-        st.error("❌ Dataset not found for performance visualization.")
+        st.error("Dataset not found for performance visualization.")
     else:
         st.markdown("### Random Forest Model Evaluation")
         st.info(
@@ -389,7 +382,7 @@ elif page == "📈 Model Performance":
         )
 
         st.markdown("---")
-        st.subheader("🎯 Overall Performance Metrics")
+        st.subheader("Overall Performance Metrics")
 
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -402,7 +395,7 @@ elif page == "📈 Model Performance":
             st.metric("F1 Score", "54%", help="Harmonic mean of precision and recall")
 
         st.markdown("---")
-        st.subheader("📊 Performance by Addiction Level")
+        st.subheader("Performance by Addiction Level")
 
         col1, col2 = st.columns([1, 1])
 
@@ -454,12 +447,11 @@ elif page == "📈 Model Performance":
             st.pyplot(fig)
 
         st.markdown("---")
-        st.subheader("🔀 Confusion Matrix")
+        st.subheader("Confusion Matrix")
 
         col1, col2 = st.columns([1, 1])
 
         with col1:
-            # Simulated confusion matrix based on the metrics
             cm = np.array([[260, 112, 41], [101, 231, 80], [52, 99, 258]])
 
             fig, ax = plt.subplots(figsize=(8, 6))
@@ -478,7 +470,7 @@ elif page == "📈 Model Performance":
             st.pyplot(fig)
 
         with col2:
-            st.markdown("### 📝 Key Insights")
+            st.markdown("### Key Insights")
             st.markdown("""
             **Common Misclassifications:**
             - **27%** of Low games → Medium
@@ -499,7 +491,7 @@ elif page == "📈 Model Performance":
             """)
 
         st.markdown("---")
-        st.subheader("⭐ Feature Importance Analysis")
+        st.subheader("Feature Importance Analysis")
 
         importances = model.feature_importances_
         feature_names = [
@@ -541,16 +533,16 @@ elif page == "📈 Model Performance":
             plt.xlabel("Importance Score")
             st.pyplot(fig)
 
-elif page == "ℹ️ About":
-    st.title("ℹ️ About This Project")
+elif page == "About":
+    st.title("About This Project")
 
     st.markdown("""
-    ## 🎮 Game Addiction Predictor
+    ## Game Addiction Predictor
     
     This application uses machine learning to predict the addiction potential of video games
     based on their characteristics and community engagement data from Steam.
     
-    ### 🎯 Project Overview
+    ### Project Overview
     
     **Objective:** Develop an automated system to classify games by addiction risk level
     
@@ -558,7 +550,7 @@ elif page == "ℹ️ About":
     
     **Models:** Random Forest (55% accuracy) and XGBoost (50% accuracy)
     
-    ### 📊 Features Used
+    ### Features Used
     
     The model analyzes these game characteristics:
     - **Price**: Game cost in USD
@@ -568,7 +560,7 @@ elif page == "ℹ️ About":
     - **Tags**: Genre and feature tags
     - **Addictive Tags**: Specific engagement-linked features
     
-    ### 🔬 Methodology
+    ### Methodology
     
     1. **Data Collection**: Merged three Steam datasets from Kaggle
     2. **Feature Engineering**: Created behavioral indicators
@@ -577,7 +569,7 @@ elif page == "ℹ️ About":
     5. **Evaluation**: Tested with accuracy, precision, recall, F1-score
     6. **Deployment**: Built interactive Streamlit dashboard
     
-    ### ⚠️ Important Disclaimers
+    ### Important Disclaimers
     
     **Limitations:**
     - Playtime ≠ clinical addiction
@@ -591,7 +583,7 @@ elif page == "ℹ️ About":
     - Low predictions don't guarantee safety
     - Consult professionals for real addiction concerns
     
-    ### 🎓 Academic Context
+    ### Academic Context
     
     **Project Type:** Foundations of Data Science Course Project
     
@@ -599,14 +591,14 @@ elif page == "ℹ️ About":
     
     **Department:** Computer Science
     
-    ### 📚 Research Foundation
+    ### Research Foundation
     
     This work builds on research showing that:
     - Structural game features drive addiction (Griffiths et al., 2012)
     - Engagement dimensions predict addiction (Abbasi et al., 2021)
     - High playtime alone ≠ addiction (Andre et al., 2020)
     
-    ### 💻 Technology Stack
+    ### Technology Stack
     
     - **Machine Learning**: scikit-learn, XGBoost
     - **Data Processing**: pandas, numpy
@@ -614,25 +606,25 @@ elif page == "ℹ️ About":
     - **Web App**: Streamlit
     - **Development**: Python 3.8+
     
-    ### 🔗 Resources
+    ### Resources
     
-    **GitHub Repository**: [Link to your repository]
+    **GitHub Repository**: https://github.com/codenewbie09/esports_game_addiction_predictor
     
     **Dataset Source**: Steam Games Dataset (Kaggle)
     
     **Model Files**: Random Forest and XGBoost classifiers
     
-    ### 📧 Contact
+    ### Contact
     
     For questions or feedback about this project, please contact through the course instructor.
     
     ---
     
-    *Built with ❤️ using Streamlit and scikit-learn*
+    *Built with Streamlit and scikit-learn*
     """)
 
     st.markdown("---")
-    st.subheader("🏆 Project Achievements")
+    st.subheader("Project Achievements")
 
     col1, col2, col3 = st.columns(3)
     with col1:
